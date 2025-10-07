@@ -29,6 +29,14 @@
     },
     {
       "path": "./tsconfig.spec.json"
+    },
+    {
+      "compilerOptions": {
+        "baseUrl": "./",
+        "paths": {
+          "@shared/*": ["app/shared/*"]
+        }
+      }
     }
   ]
 }

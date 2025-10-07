@@ -1,0 +1,16 @@
+<div class="form-container">
+  <app-form-header></app-form-header>
+
+  <div class="form-content">
+    <app-image-upload
+      [currentImage]="userData.imagen"
+      (imageSelected)="onImageSelected($event)"
+    ></app-image-upload>
+
+    <app-user-info
+      [userData]="userData"
+      (formDataChange)="onFormDataChange($event)"
+      (submitForm)="onSubmit()">
+    </app-user-info>
+  </div>
+</div>

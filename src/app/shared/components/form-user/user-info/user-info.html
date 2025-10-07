@@ -1,0 +1,157 @@
+<div class="info-section">
+  <div class="info-header">
+    <h2 class="info-title">Tu información</h2>
+    <p class="info-subtitle">Completa la siguiente información para completar tu perfil.</p>
+  </div>
+
+  <form class="form" (ngSubmit)="onSubmit()">
+    <!-- NOMBRE -->
+    <div class="form-group">
+      <label for="nombre" class="form-label">
+        Nombre*
+      </label>
+      <input
+        type="text"
+        id="nombre"
+        class="form-input"
+        [class.error]="errors['nombre'] && touched['nombre']"
+        [(ngModel)]="userData.nombre"
+        name="nombre"
+        (blur)="onInputChange('nombre')"
+        (input)="onInputChange('nombre')"
+        maxlength="50"
+        required
+      />
+      @if (errors['nombre'] && touched['nombre']) {
+        <span class="error-message">
+          {{ errors['nombre'] }}
+        </span>
+      }
+    </div>
+
+    <!-- PASATIEMPO (SELECT) -->
+    <div class="form-group">
+      <label for="pasatiempo" class="form-label">Pasatiempo favorito*</label>
+      <select
+        id="pasatiempo"
+        class="form-input"
+        [class.error]="errors['pasatiempo'] && touched['pasatiempo']"
+        [(ngModel)]="userData.pasatiempo"
+        name="pasatiempo"
+        (blur)="onInputChange('pasatiempo')"
+        (change)="onInputChange('pasatiempo')"
+        required
+      >
+        <option value="" disabled>Selecciona una opción</option>
+        <option value="Jugar Fútbol">Jugar Fútbol</option>
+        <option value="Jugar Basquetball">Jugar Basquetball</option>
+        <option value="Jugar Tennis">Jugar Tennis</option>
+        <option value="Jugar Voleibol">Jugar Voleibol</option>
+        <option value="Jugar Fifa">Jugar Fifa</option>
+        <option value="Jugar Videojuegos">Jugar Videojuegos</option>
+      </select>
+      @if (errors['pasatiempo'] && touched['pasatiempo']) {
+        <span class="error-message">
+          {{ errors['pasatiempo'] }}
+        </span>
+      }
+    </div>
+
+    <!-- CUMPLEAÑOS -->
+    <div class="form-group">
+      <label for="cumpleanos" class="form-label">Cumpleaños*</label>
+      <input
+        type="date"
+        id="cumpleanos"
+        class="form-input"
+        [class.error]="errors['cumpleanos'] && touched['cumpleanos']"
+        [(ngModel)]="userData.cumpleanos"
+        name="cumpleanos"
+        [max]="today"
+        (blur)="onInputChange('cumpleanos')"
+        (change)="onInputChange('cumpleanos')"
+        required
+      />
+      @if (errors['cumpleanos'] && touched['cumpleanos']) {
+        <span class="error-message">
+          {{ errors['cumpleanos'] }}
+        </span>
+      }
+      @if (!errors['cumpleanos']) {
+        <small class="form-hint">
+          Debes tener al menos 5 años
+        </small>
+      }
+    </div>
+
+    <!-- DUI (Solo mayores de 18) -->
+    @if (isAdult) {
+      <div class="form-group">
+        <label for="dui" class="form-label">
+          DUI*
+          <span class="badge badge-adult">Mayor de 18</span>
+        </label>
+        <input
+          type="text"
+          id="dui"
+          class="form-input"
+          [class.error]="errors['dui'] && touched['dui']"
+          [(ngModel)]="userData.dui"
+          name="dui"
+          placeholder="12345678-9"
+          maxlength="10"
+          (blur)="onInputChange('dui')"
+          (input)="formatDui($event)"
+          required
+        />
+        @if (errors['dui'] && touched['dui']) {
+          <span class="error-message">
+            {{ errors['dui'] }}
+          </span>
+        }
+        @if (!errors['dui']) {
+          <small class="form-hint">
+            Formato: 12345678-9
+          </small>
+        }
+      </div>
+    }
+
+    <!-- CARNET DE MINORIDAD (Solo entre 5 y 17 años) -->
+    @if (isMinor) {
+      <div class="form-group">
+        <label for="carnet" class="form-label">
+          Carnet de minoridad*
+          <span class="badge badge-minor">Menor de 18</span>
+        </label>
+        <input
+          type="text"
+          id="carnet"
+          class="form-input"
+          [class.error]="errors['carnet'] && touched['carnet']"
+          [(ngModel)]="userData.carnet"
+          name="carnet"
+          placeholder="Ingresa tu carnet"
+          maxlength="20"
+          (blur)="onInputChange('carnet')"
+          (input)="onInputChange('carnet')"
+          required
+        />
+        @if (errors['carnet'] && touched['carnet']) {
+          <span class="error-message">
+            {{ errors['carnet'] }}
+          </span>
+        }
+        @if (!errors['carnet']) {
+          <small class="form-hint">
+            Máximo 20 caracteres
+          </small>
+        }
+      </div>
+    }
+
+    <button type="submit" class="submit-btn">
+      Continuar
+    </button>
+  </form>
+</div>
