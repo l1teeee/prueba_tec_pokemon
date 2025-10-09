@@ -1,8 +1,7 @@
 <div class="image-section">
   <div class="image-card">
-    <!-- Vista de tarjeta cuando está registrado -->
     @if (isRegistered && currentImage) {
-      <h3 class="card-title">{{ userInfo.nombre || 'Usuario' }} {{ userInfo.apellido || '' }}</h3>
+      <h3 class="card-title user-full-name">{{ userInfo.nombre || 'Usuario' }} {{ userInfo.apellido || '' }}</h3>
 
       <div class="image-container">
         <div class="image-circle">
@@ -11,29 +10,25 @@
       </div>
 
       <div class="upload-section">
-        <div class="image-info">
-          <div class="file-details">
-            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 14px; color: #666;">Pasatiempo:</span>
-                <span style="font-size: 14px; font-weight: 500; color: #0066A1;">{{ userInfo.pasatiempo || 'No especificado' }}</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 14px; color: #666;">Edad:</span>
-                <span style="font-size: 14px; font-weight: 500; color: #0066A1;">{{ getAge() }}</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 14px; color: #666;">{{ getDocumentoLabel() }}</span>
-                <span style="font-size: 14px; font-weight: 500; color: #0066A1;">{{ getDocumento() }}</span>
-              </div>
-            </div>
+        <div class="user-data-card">
+          <div class="user-data-row">
+            <span class="user-data-label">Pasatiempo:</span>
+            <span class="user-data-value">{{ userInfo.pasatiempo || 'No especificado' }}</span>
           </div>
+          <div class="user-data-row">
+            <span class="user-data-label">Edad:</span>
+            <span class="user-data-value">{{ getAge() }}</span>
+          </div>
+          @if (userInfo.dui) {
+            <div class="user-data-row">
+              <span class="user-data-label">DUI:</span>
+              <span class="user-data-value">{{ userInfo.dui }}</span>
+            </div>
+          }
         </div>
       </div>
     } @else {
-      <!-- Vista normal de carga de imagen -->
       <h3 class="card-title">Imágen perfil*</h3>
-
       <div class="image-container">
         <div class="image-circle">
           @if (currentImage) {

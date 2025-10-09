@@ -98,8 +98,6 @@ export class Formuser implements OnInit, OnDestroy {
     this.showLoading = false;
     alert('Perfil guardado exitosamente');
     this.showImageValidation = false;
-
-    // Recargar el header para actualizar el saludo
     window.location.reload();
   }
 }
