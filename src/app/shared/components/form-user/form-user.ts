@@ -8,11 +8,12 @@ import { Imageupload } from './image-upload/image-upload';
 import { Loading } from '@components/loading/loading';
 import { UserData } from '@models/user-data.model';
 import { UserDataService } from '@services/user-data.service';
+import { PickPokemon } from '@components/form-user/pick-pokemon/pick-pokemon'
 
 @Component({
   selector: 'app-form-user',
   standalone: true,
-  imports: [CommonModule, FormsModule, FormHeader, Userinfo, Loading, Imageupload],
+  imports: [CommonModule, FormsModule, FormHeader, Userinfo, Loading, Imageupload, PickPokemon],
   templateUrl: './form-user.html',
   styleUrls: ['./form-user.scss'],
 })
@@ -93,11 +94,12 @@ export class Formuser implements OnInit, OnDestroy {
     }
   }
 
-
   onLoadingComplete() {
     this.showLoading = false;
     alert('Perfil guardado exitosamente');
     this.showImageValidation = false;
     window.location.reload();
   }
+
+
 }

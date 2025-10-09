@@ -37,4 +37,18 @@ export class FormHeader implements OnInit {
   getSubtitle(): string {
     return this.isRegistered ? 'Revisa la información, y completa lo solicitado.' : 'Queremos conocerte mejor.';
   }
+
+  onBack() {
+    const storedData = localStorage.getItem('userData');
+    if (storedData) {
+      try {
+        const userData = JSON.parse(storedData);
+        userData.registerComplete = false;
+        localStorage.setItem('userData', JSON.stringify(userData));
+        window.location.reload();
+      } catch (error) {
+        console.error('Error updating user data:', error);
+      }
+    }
+  }
 }

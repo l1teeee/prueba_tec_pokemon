@@ -14,7 +14,7 @@ export class Imageupload implements OnInit {
   @Output() imageChange = new EventEmitter<string | null>();
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-  fileName: string = '';
+  fileName: string = ''; // Asegúrate que esté inicializado
   imageError: string = '';
   isRegistered: boolean = false;
   userInfo: any = {};
@@ -22,6 +22,10 @@ export class Imageupload implements OnInit {
 
   ngOnInit() {
     this.loadUserData();
+    const savedFileName = localStorage.getItem('profileImageName');
+    if (savedFileName && this.currentImage) {
+      this.fileName = savedFileName;
+    }
   }
 
   private loadUserData() {
@@ -93,10 +97,12 @@ export class Imageupload implements OnInit {
       return;
     }
 
+    this.fileName = file.name;
+    console.log('Nombre del archivo:', this.fileName); // Para debug
+    localStorage.setItem('profileImageName', this.fileName);
     const reader = new FileReader();
     reader.onload = (e) => {
       this.currentImage = e.target?.result as string;
-      this.fileName = file.name;
       this.imageError = '';
       this.imageChange.emit(this.currentImage);
     };
@@ -107,6 +113,7 @@ export class Imageupload implements OnInit {
     this.currentImage = null;
     this.fileName = '';
     this.imageError = '';
+    localStorage.removeItem('profileImageName');
     if (this.fileInput) {
       this.fileInput.nativeElement.value = '';
     }
