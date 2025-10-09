@@ -10,7 +10,7 @@ import { UserDataService } from '@services/user-data.service';
   standalone: true,
   imports: [CommonModule, FormsModule, Search],
   templateUrl: './userboton.html',
-  styleUrls: ['./userboton.css'],
+  styleUrls: ['./userboton.scss'],
 })
 export class Userboton implements OnInit, OnDestroy {
   selectedAction = '';

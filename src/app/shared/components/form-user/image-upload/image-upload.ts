@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -6,9 +6,9 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './image-upload.html',
-  styleUrls: ['./image-upload.css']
+  styleUrls: ['./image-upload.scss']
 })
-export class Imageupload {
+export class Imageupload implements OnInit {
   @Input({ transform: (value: string | undefined) => value ?? null }) currentImage: string | null = null;
   @Input() showValidation = false;
   @Output() imageChange = new EventEmitter<string | null>();
@@ -16,7 +16,27 @@ export class Imageupload {
 
   fileName: string = '';
   imageError: string = '';
+  isRegistered: boolean = false;
+  userInfo: any = {};
   private maxFileSize = 5 * 1024 * 1024;
+
+  ngOnInit() {
+    this.loadUserData();
+  }
+
+  private loadUserData() {
+    const storedData = localStorage.getItem('userData');
+    if (storedData) {
+      try {
+        const userData = JSON.parse(storedData);
+        this.isRegistered = userData.registerComplete === true;
+        this.userInfo = userData;
+      } catch (error) {
+        console.error('Error al leer datos del usuario:', error);
+        this.isRegistered = false;
+      }
+    }
+  }
 
   getDisplayError(): string {
     if (this.showValidation && !this.currentImage) {
@@ -27,6 +47,29 @@ export class Imageupload {
 
   getFileSizeLabel(): string {
     return 'Máximo 5MB';
+  }
+
+  getAge(): string {
+    if (!this.userInfo.cumpleanos) return 'N/A';
+
+    const birthDate = new Date(this.userInfo.cumpleanos);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return `${age} años`;
+  }
+
+  getDocumento(): string {
+    return this.userInfo.dui || this.userInfo.carnet || 'No especificado';
+  }
+
+  getDocumentoLabel(): string {
+    return this.userInfo.dui ? 'DUI:' : 'Carnet:';
   }
 
   triggerFileInput() {

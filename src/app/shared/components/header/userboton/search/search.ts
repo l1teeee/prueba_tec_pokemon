@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-search',
   imports: [CommonModule, FormsModule],
   templateUrl: './search.html',
-  styleUrl: './search.css'
+  styleUrl: './search.scss'
 })
 export class Search {
   isOpen = false;

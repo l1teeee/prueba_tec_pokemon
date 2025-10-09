@@ -7,6 +7,6 @@ import { Logo } from './logo/logo';
   standalone: true,
   imports: [ Logo, Userboton],
   templateUrl: './header.html',
-  styleUrls: ['./header.css'],
+  styleUrls: ['./header.scss'],
 })
 export class Header {}

@@ -19,7 +19,7 @@ interface TouchedFields {
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './user-info.html',
-  styleUrl: './user-info.css'
+  styleUrl: './user-info.scss'
 })
 export class Userinfo implements OnChanges {
   @Input() userData: any = {};

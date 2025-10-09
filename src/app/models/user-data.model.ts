@@ -9,6 +9,7 @@ export interface UserData {
   dui?: string;
   carnet?: string;
   imagen?: string;
+  registerComplete?: boolean;
 }
 
 export const createEmptyUserData = (): UserData => ({
@@ -20,4 +21,5 @@ export const createEmptyUserData = (): UserData => ({
   dui: '',
   carnet: '',
   imagen: '',
+  registerComplete: false,
 });

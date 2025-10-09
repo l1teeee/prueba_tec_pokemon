@@ -240,13 +240,6 @@ input[type="date"].form-input::-webkit-calendar-picker-indicator {
   }
 }
 
-/* Título */
-.card-title{
-  margin:0;
-  font-weight:600;
-  font-size: clamp(16px, 2vw, 18px);
-  color: #1a1a1a;
-}
 
 /* Avatar / imagen */
 .image-container{ width:100%; display:flex; justify-content:center; }

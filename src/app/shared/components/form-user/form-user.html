@@ -6,6 +6,7 @@
       <app-image-upload
         [currentImage]="userData.imagen"
         [showValidation]="showImageValidation"
+        (imageChange)="onImageChange($event)"
       ></app-image-upload>
     </div>
     <div>

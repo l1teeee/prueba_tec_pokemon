@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { FormHeader } from './form-header/form-header';
 import { Userinfo } from './user-info/user-info';
+import { Imageupload } from './image-upload/image-upload';
 import { Loading } from '@components/loading/loading';
 import { UserData } from '@models/user-data.model';
 import { UserDataService } from '@services/user-data.service';
-import {Imageupload} from './image-upload/image-upload';
 
 @Component({
   selector: 'app-form-user',
   standalone: true,
   imports: [CommonModule, FormsModule, FormHeader, Userinfo, Loading, Imageupload],
   templateUrl: './form-user.html',
-  styleUrls: ['./form-user.css'],
+  styleUrls: ['./form-user.scss'],
 })
 export class Formuser implements OnInit, OnDestroy {
   @ViewChild(Userinfo) userInfoComponent!: Userinfo;
@@ -38,6 +38,13 @@ export class Formuser implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  onImageChange(image: string | null) {
+    this.userDataService.updateUserData({ imagen: image || '' });
+    if (image) {
+      this.showImageValidation = false;
+    }
   }
 
   onFormDataChange(data: Partial<UserData>) {
@@ -70,19 +77,29 @@ export class Formuser implements OnInit, OnDestroy {
       return;
     }
 
-    const saved = this.userDataService.saveUserData(this.userData);
+    // Marcar registro como completo
+    const completeUserData = {
+      ...this.userData,
+      registerComplete: true
+    };
+
+    const saved = this.userDataService.saveUserData(completeUserData);
 
     if (saved) {
       this.showLoading = true;
-      console.log('Datos guardados:', this.userData);
+      console.log('Datos guardados:', completeUserData);
     } else {
       alert('Error al guardar el perfil');
     }
   }
 
+
   onLoadingComplete() {
     this.showLoading = false;
     alert('Perfil guardado exitosamente');
     this.showImageValidation = false;
+
+    // Recargar el header para actualizar el saludo
+    window.location.reload();
   }
 }

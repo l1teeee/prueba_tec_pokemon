@@ -1,8 +1,7 @@
-/* CENTRADO DEL CONTENEDOR EN CUALQUIER LAYOUT */
 .image-section{
-  width: min(100%, 420px);           /* ancho máximo cómodo en desktop */
-  margin-inline: auto;               /* centra en layouts no-grid */
-  place-self: start center;          /* centra en layouts grid (h: center) */
+  width: min(100%, 420px);
+  margin-inline: auto;
+  place-self: start center;
 }
 
 /* TARJETA */
@@ -16,14 +15,14 @@
   flex-direction: column;
   align-items: center;
   gap: clamp(16px, 2.5vw, 24px);
-  min-height: clamp(340px, 48vw, 420px); /* altura fluida y proporcionada */
+  min-height: clamp(340px, 48vw, 420px);
 }
 
 /* TÍTULO */
 .card-title{
   font-size: clamp(16px, 2vw, 18px);
   font-weight: 600;
-  color:#fff;
+  color: #000000;
   margin: 0;
 }
 

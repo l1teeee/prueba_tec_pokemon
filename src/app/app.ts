@@ -7,7 +7,7 @@ import {Formuser} from '@components/form-user/form-user';
   selector: 'app-root',
   imports: [RouterOutlet, Header, Formuser],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.scss'
 })
 export class App {
   protected readonly title = signal('pruebatec-pokemon');
