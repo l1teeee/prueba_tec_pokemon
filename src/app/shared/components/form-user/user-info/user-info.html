@@ -1,10 +1,10 @@
-<div class="info-section">
-  <div class="info-header">
-    <h2 class="info-title">Tu información</h2>
-    <p class="info-subtitle">Completa la siguiente información para completar tu perfil.</p>
-  </div>
+<form class="form" (ngSubmit)="onSubmit()">
 
-  <form class="form" (ngSubmit)="onSubmit()">
+  <div class="form-complete">
+    <div class="info-header">
+      <h2 class="info-title">Tu información</h2>
+      <p class="info-subtitle">Completa la siguiente información para completar tu perfil.</p>
+    </div>
     <!-- NOMBRE -->
     <div class="form-group">
       <label for="nombre" class="form-label">
@@ -28,7 +28,6 @@
         </span>
       }
     </div>
-
     <!-- PASATIEMPO (SELECT) -->
     <div class="form-group">
       <label for="pasatiempo" class="form-label">Pasatiempo favorito*</label>
@@ -56,7 +55,6 @@
         </span>
       }
     </div>
-
     <!-- CUMPLEAÑOS -->
     <div class="form-group">
       <label for="cumpleanos" class="form-label">Cumpleaños*</label>
@@ -83,8 +81,7 @@
         </small>
       }
     </div>
-
-    <!-- DUI (Solo mayores de 18) -->
+    <!-- DUI  -->
     @if (isAdult) {
       <div class="form-group">
         <label for="dui" class="form-label">
@@ -100,8 +97,10 @@
           name="dui"
           placeholder="12345678-9"
           maxlength="10"
+          inputmode="numeric"
           (blur)="onInputChange('dui')"
           (input)="formatDui($event)"
+          (keypress)="onDuiKeyPress($event)"
           required
         />
         @if (errors['dui'] && touched['dui']) {
@@ -116,8 +115,7 @@
         }
       </div>
     }
-
-    <!-- CARNET DE MINORIDAD (Solo entre 5 y 17 años) -->
+    <!-- CARNET DE MINORIDAD  -->
     @if (isMinor) {
       <div class="form-group">
         <label for="carnet" class="form-label">
@@ -149,9 +147,9 @@
         }
       </div>
     }
-
     <button type="submit" class="submit-btn">
       Continuar
     </button>
-  </form>
-</div>
+  </div>
+
+</form>

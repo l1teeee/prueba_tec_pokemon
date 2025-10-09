@@ -2,15 +2,24 @@
   <app-form-header></app-form-header>
 
   <div class="form-content">
-    <app-image-upload
-      [currentImage]="userData.imagen"
-      (imageSelected)="onImageSelected($event)"
-    ></app-image-upload>
-
-    <app-user-info
-      [userData]="userData"
-      (formDataChange)="onFormDataChange($event)"
-      (submitForm)="onSubmit()">
-    </app-user-info>
+    <div>
+      <app-image-upload
+        [currentImage]="userData.imagen"
+        [showValidation]="showImageValidation"
+      ></app-image-upload>
+    </div>
+    <div>
+      <app-user-info
+        [userData]="userData"
+        [showValidationError]="showImageValidation"
+        (formDataChange)="onFormDataChange($event)"
+        (submitForm)="onSubmit()"
+      ></app-user-info>
+    </div>
   </div>
 </div>
+
+<app-loading
+  [show]="showLoading"
+  (loadingComplete)="onLoadingComplete()">
+</app-loading>

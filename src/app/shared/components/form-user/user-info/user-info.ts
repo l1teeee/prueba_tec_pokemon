@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output, OnChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 interface ValidationErrors {
   nombre?: string;
@@ -9,58 +10,158 @@ interface ValidationErrors {
   carnet?: string;
 }
 
+interface TouchedFields {
+  [key: string]: boolean;
+}
+
 @Component({
   selector: 'app-user-info',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './user-info.html',
   styleUrl: './user-info.css'
 })
 export class Userinfo implements OnChanges {
   @Input() userData: any = {};
+  @Input() showValidationError: boolean = false;
   @Output() formDataChange = new EventEmitter<any>();
   @Output() submitForm = new EventEmitter<void>();
+  @Output() imageSelected = new EventEmitter<string>();
+  @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
 
+  private readonly MAX_SIZE_MB = 2;
+  private readonly MAX_SIZE_BYTES = this.MAX_SIZE_MB * 1024 * 1024;
+  private readonly MIN_IMAGE_SIZE = 100;
+  private readonly VALID_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  private readonly MIN_AGE = 5;
+  private readonly ADULT_AGE = 18;
+  private readonly MAX_AGE = 120;
+
+  currentImage?: string;
+  errorMessage: string = '';
+  fileName: string = '';
   isAdult: boolean = false;
   isMinor: boolean = false;
   age: number = 0;
   errors: ValidationErrors = {};
-  touched: { [key: string]: boolean } = {};
+  touched: TouchedFields = {};
   today: string = new Date().toISOString().split('T')[0];
 
   ngOnChanges() {
     this.checkAge();
+    this.currentImage = this.userData.imagen;
   }
 
-  onInputChange(field?: string) {
-    if (field) {
-      this.touched[field] = true;
+  // IMAGEN
+  getDisplayError(): string {
+    return this.showValidationError && !this.currentImage
+      ? 'Debes seleccionar una imagen de perfil'
+      : this.errorMessage;
+  }
+
+  triggerFileInput() {
+    this.fileInputRef.nativeElement.click();
+  }
+
+  onFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    this.errorMessage = '';
+    const validation = this.validateImageFile(file);
+
+    if (!validation.valid) {
+      this.errorMessage = validation.error!;
+      (event.target as HTMLInputElement).value = '';
+      return;
     }
+
+    this.readImageFile(file);
+  }
+
+  private validateImageFile(file: File): { valid: boolean; error?: string } {
+    if (!this.VALID_IMAGE_TYPES.includes(file.type)) {
+      return { valid: false, error: 'Solo se permiten archivos JPG, PNG, GIF o WebP' };
+    }
+
+    if (file.size > this.MAX_SIZE_BYTES) {
+      const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+      return { valid: false, error: `Imagen muy grande (${fileSizeInMB}MB). Máximo ${this.MAX_SIZE_MB}MB` };
+    }
+
+    return { valid: true };
+  }
+
+  private readImageFile(file: File) {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      const img = new Image();
+      img.src = result;
+
+      img.onload = () => {
+        if (img.width < this.MIN_IMAGE_SIZE || img.height < this.MIN_IMAGE_SIZE) {
+          this.errorMessage = `La imagen debe ser al menos de ${this.MIN_IMAGE_SIZE}x${this.MIN_IMAGE_SIZE} píxeles`;
+          return;
+        }
+
+        this.updateImage(result, file.name);
+      };
+
+      img.onerror = () => this.errorMessage = 'Error al cargar la imagen';
+    };
+
+    reader.onerror = () => this.errorMessage = 'Error al leer el archivo';
+    reader.readAsDataURL(file);
+  }
+
+  private updateImage(imageData: string, fileName: string) {
+    this.fileName = fileName;
+    this.currentImage = imageData;
+    this.userData.imagen = imageData;
+    this.imageSelected.emit(imageData);
+    this.emitChanges();
+  }
+
+  removeImage() {
+    this.currentImage = '';
+    this.userData.imagen = '';
+    this.fileName = '';
+    this.errorMessage = '';
+    this.imageSelected.emit('');
+    this.emitChanges();
+    if (this.fileInputRef?.nativeElement) {
+      this.fileInputRef.nativeElement.value = '';
+    }
+  }
+
+  getFileSizeLabel(): string {
+    return `Máximo ${this.MAX_SIZE_MB}MB`;
+  }
+
+  // Validación
+  onInputChange(field?: string) {
+    if (field) this.touched[field] = true;
     this.checkAge();
-    this.validateField(field);
+    if (field) this.validateField(field);
+    this.emitChanges();
+  }
+
+  private emitChanges() {
     this.formDataChange.emit(this.userData);
   }
 
-  validateField(field?: string) {
-    if (!field) return;
+  validateField(field: string) {
+    const validators: { [key: string]: () => void } = {
+      nombre: () => this.validateNombre(),
+      pasatiempo: () => this.validatePasatiempo(),
+      cumpleanos: () => this.validateCumpleanos(),
+      dui: () => this.validateDui(),
+      carnet: () => this.validateCarnet()
+    };
 
-    switch (field) {
-      case 'nombre':
-        this.validateNombre();
-        break;
-      case 'pasatiempo':
-        this.validatePasatiempo();
-        break;
-      case 'cumpleanos':
-        this.validateCumpleanos();
-        break;
-      case 'dui':
-        this.validateDui();
-        break;
-      case 'carnet':
-        this.validateCarnet();
-        break;
-    }
+    validators[field]?.();
   }
 
   validateNombre() {
@@ -80,13 +181,9 @@ export class Userinfo implements OnChanges {
   }
 
   validatePasatiempo() {
-    const pasatiempo = this.userData.pasatiempo;
-
-    if (!pasatiempo) {
-      this.errors.pasatiempo = 'Debes seleccionar un pasatiempo';
-    } else {
-      delete this.errors.pasatiempo;
-    }
+    this.userData.pasatiempo
+      ? delete this.errors.pasatiempo
+      : this.errors.pasatiempo = 'Debes seleccionar un pasatiempo';
   }
 
   validateCumpleanos() {
@@ -99,15 +196,15 @@ export class Userinfo implements OnChanges {
 
     const birthDate = new Date(cumpleanos);
     const today = new Date();
-    const minDate = new Date(today.getFullYear() - 120, today.getMonth(), today.getDate());
-    const maxDate = new Date(today.getFullYear() - 5, today.getMonth(), today.getDate());
+    const minDate = new Date(today.getFullYear() - this.MAX_AGE, today.getMonth(), today.getDate());
+    const maxDate = new Date(today.getFullYear() - this.MIN_AGE, today.getMonth(), today.getDate());
 
     if (birthDate > today) {
       this.errors.cumpleanos = 'La fecha no puede ser futura';
     } else if (birthDate < minDate) {
       this.errors.cumpleanos = 'La fecha no puede ser tan antigua';
     } else if (birthDate > maxDate) {
-      this.errors.cumpleanos = 'Debes tener al menos 5 años';
+      this.errors.cumpleanos = `Debes tener al menos ${this.MIN_AGE} años`;
     } else {
       delete this.errors.cumpleanos;
     }
@@ -122,7 +219,7 @@ export class Userinfo implements OnChanges {
     const dui = this.userData.dui?.trim();
 
     if (!dui) {
-      this.errors.dui = 'El DUI es requerido para mayores de 18 años';
+      this.errors.dui = `El DUI es requerido para mayores de ${this.ADULT_AGE} años`;
     } else if (!/^\d{8}-\d$/.test(dui)) {
       this.errors.dui = 'Formato inválido. Use: 12345678-9';
     } else {
@@ -148,112 +245,76 @@ export class Userinfo implements OnChanges {
   }
 
   checkAge() {
-    if (this.userData.cumpleanos) {
-      const birthDate = new Date(this.userData.cumpleanos);
-      const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (!this.userData.cumpleanos) return;
 
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
+    const birthDate = new Date(this.userData.cumpleanos);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
 
-      this.age = age;
-      this.isAdult = age >= 18;
-      this.isMinor = age >= 5 && age < 18;
-
-      if (this.isAdult) {
-        delete this.userData.carnet;
-        delete this.errors.carnet;
-      } else if (this.isMinor) {
-        delete this.userData.dui;
-        delete this.errors.dui;
-      } else {
-        delete this.userData.dui;
-        delete this.userData.carnet;
-        delete this.errors.dui;
-        delete this.errors.carnet;
-      }
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
     }
+
+    this.age = age;
+    this.isAdult = age >= this.ADULT_AGE;
+    this.isMinor = age >= this.MIN_AGE && age < this.ADULT_AGE;
+
+    this.cleanupAgeFields();
   }
 
-  isFormValid(): boolean {
-    // NO ejecutar validaciones aquí, solo verificar el estado actual
-
-    // Verificar si hay campos vacíos
-    if (!this.userData.nombre?.trim() ||
-      !this.userData.pasatiempo ||
-      !this.userData.cumpleanos) {
-      return false;
+  private cleanupAgeFields() {
+    if (this.isAdult) {
+      delete this.userData.carnet;
+      delete this.errors.carnet;
+    } else if (this.isMinor) {
+      delete this.userData.dui;
+      delete this.errors.dui;
+    } else {
+      delete this.userData.dui;
+      delete this.userData.carnet;
+      delete this.errors.dui;
+      delete this.errors.carnet;
     }
-
-    // Verificar si hay errores
-    if (Object.keys(this.errors).length > 0) {
-      return false;
-    }
-
-    // Validar campos específicos según edad
-    if (this.isAdult && !this.userData.dui?.trim()) {
-      return false;
-    }
-
-    if (this.isMinor && !this.userData.carnet?.trim()) {
-      return false;
-    }
-
-    return true;
   }
 
   validateAll(): boolean {
-    // Marcar todos los campos como tocados
-    this.touched = {
-      nombre: true,
-      pasatiempo: true,
-      cumpleanos: true,
-      dui: true,
-      carnet: true
-    };
+    this.touched = { nombre: true, pasatiempo: true, cumpleanos: true, dui: true, carnet: true };
 
-    // Ejecutar todas las validaciones
     this.validateNombre();
     this.validatePasatiempo();
     this.validateCumpleanos();
 
-    if (this.isAdult) {
-      this.validateDui();
-    } else if (this.isMinor) {
-      this.validateCarnet();
-    }
+    if (this.isAdult) this.validateDui();
+    else if (this.isMinor) this.validateCarnet();
 
     return Object.keys(this.errors).length === 0;
   }
 
   onSubmit() {
-    // Primero validar todo y marcar campos como tocados
-    const isValid = this.validateAll();
-
-    if (isValid) {
-      this.submitForm.emit();
-    } else {
-      // Scroll al primer error después de un pequeño delay para que Angular actualice el DOM
-      setTimeout(() => {
-        const firstError = document.querySelector('.error-message');
-        if (firstError) {
-          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 100);
-    }
+    this.submitForm.emit();
   }
 
-  formatDui(event: any) {
-    let value = event.target.value.replace(/\D/g, '');
+  formatDui(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, '').substring(0, 9);
 
     if (value.length > 8) {
-      value = value.substring(0, 8) + '-' + value.substring(8, 9);
+      value = `${value.substring(0, 8)}-${value.substring(8, 9)}`;
     }
 
     this.userData.dui = value;
     this.onInputChange('dui');
+  }
+
+  onDuiKeyPress(event: KeyboardEvent) {
+    const allowedKeys = [8, 9, 27, 13, 46];
+    const isCtrlCommand = event.ctrlKey && [65, 67, 86, 88].includes(event.keyCode);
+    const isNumber = event.keyCode >= 48 && event.keyCode <= 57;
+
+    if (!allowedKeys.includes(event.keyCode) && !isCtrlCommand && !isNumber) {
+      event.preventDefault();
+    }
   }
 
   clearPasatiempo() {

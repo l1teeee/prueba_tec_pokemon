@@ -6,7 +6,6 @@
 
 .form-content{
   display: grid;
-  /* 2 columnas cuando hay espacio (cada una mínimo 320–360px), si no, 1 columna */
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
   gap: clamp(16px, 3vw, 40px);
   margin-top: clamp(16px, 3vw, 30px);

@@ -1,7 +1,8 @@
 .logo-img{
-  width: 160px;     /* ajusta aquí el tamaño deseado */
+  width: 80px;     /* ajusta aquí el tamaño deseado */
   height: auto;
   display: inline-block;
+  margin-left: 5px;
 }
 
 .hover-scale{

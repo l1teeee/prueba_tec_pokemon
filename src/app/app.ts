@@ -1,11 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {Header} from './shared/components/header/header';
-import {Formuser} from './shared/components/form-user/form-user';
+import {Header} from '@components/header/header';
+import {Formuser} from '@components/form-user/form-user';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header,Formuser],
+  imports: [RouterOutlet, Header, Formuser],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
