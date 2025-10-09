@@ -1,0 +1,13 @@
+.form-container{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(12px, 2vw, 20px);
+}
+
+.form-content{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: clamp(16px, 3vw, 40px);
+  margin-top: clamp(16px, 3vw, 30px);
+  align-items: start;
+}

@@ -1,0 +1,13 @@
+<div class="user-actions">
+  <select
+    class="user-select"
+    [(ngModel)]="selectedAction"
+    (change)="onActionChange()"
+    aria-label="Acción de usuario"
+  >
+    <option value="" disabled selected>{{ displayText }}</option>
+    <option value="profile">Perfil</option>
+    <option value="logout">Cerrar sesión</option>
+  </select>
+  <app-search></app-search>
+</div>
