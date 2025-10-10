@@ -15,7 +15,7 @@ export class FormHeader implements OnInit {
     this.checkRegistrationStatus();
   }
 
-  private checkRegistrationStatus() {
+  private checkRegistrationStatus(): void {
     const storedData = localStorage.getItem('userData');
     if (storedData) {
       try {
@@ -35,17 +35,22 @@ export class FormHeader implements OnInit {
   }
 
   getSubtitle(): string {
-    return this.isRegistered ? 'Revisa la información, y completa lo solicitado.' : 'Queremos conocerte mejor.';
+    return this.isRegistered
+      ? 'Revisa la información, y completa lo solicitado.'
+      : 'Queremos conocerte mejor.';
   }
 
-  onBack() {
+  onBack(): void {
     const storedData = localStorage.getItem('userData');
     if (storedData) {
       try {
         const userData = JSON.parse(storedData);
         userData.registerComplete = false;
         localStorage.setItem('userData', JSON.stringify(userData));
-        window.location.reload();
+        this.isRegistered = false;
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       } catch (error) {
         console.error('Error updating user data:', error);
       }

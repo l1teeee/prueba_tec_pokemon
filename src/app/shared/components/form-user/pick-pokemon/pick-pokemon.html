@@ -1,1 +1,101 @@
-<p>pick-pokemon works!</p>
+<div class="pokemon-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>Pokémon</h1>
+    <p class="subtitle">Selecciona 3 Pokémon para que sean parte de tu equipo</p>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-box">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="🔍 Buscar por índice, nombre..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearchChange()"
+    />
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-state">
+      <div class="pokeball-loader"></div>
+      <p>Cargando Pokémon...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (errorMessage) {
+    <div class="error-state">
+      <p>⚠️ {{ errorMessage }}</p>
+      <button class="retry-btn" (click)="loadPokemon()">Reintentar</button>
+    </div>
+  }
+
+  <!-- Pokemon Grid with Virtual Scroll (3x3) -->
+  @if (!isLoading && !errorMessage) {
+    <div class="pokemon-grid">
+      <cdk-virtual-scroll-viewport
+        [itemSize]="ITEM_SIZE"
+        class="viewport"
+      >
+        @for (row of getPokemonRows(); track row[0]?.id) {
+          <div class="pokemon-row">
+            @for (pokemon of row; track pokemon.id) {
+              <div
+                class="pokemon-card"
+                [class.selected]="isSelected(pokemon)"
+                [class.disabled]="!canAddMore() && !isSelected(pokemon)"
+                (click)="togglePokemon(pokemon)"
+              >
+                <div class="pokemon-image">
+                  <img
+                    [src]="pokemon.sprite"
+                    [alt]="pokemon.name"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="pokemon-badge">
+                  <span class="pokemon-id">{{ getPokemonNumber(pokemon.id) }}</span>
+                  <span class="pokemon-name">{{ pokemon.name }}</span>
+                </div>
+                @if (isSelected(pokemon)) {
+                  <div class="checkmark">✓</div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </cdk-virtual-scroll-viewport>
+    </div>
+  }
+
+  <!-- No Results -->
+  @if (!isLoading && filteredPokemon.length === 0) {
+    <div class="no-results">
+      <p>😕 No se encontraron Pokémon</p>
+      <button class="clear-search-btn" (click)="searchTerm = ''; onSearchChange()">
+        Limpiar búsqueda
+      </button>
+    </div>
+  }
+
+  <!-- Save Button -->
+  @if (!isLoading) {
+    <div class="save-section">
+      <div class="team-counter">
+        <span class="counter-text">{{ selectedTeam.length }}/{{ MAX_TEAM_SIZE }} Pokémon seleccionados</span>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width]="getProgressWidth()"></div>
+        </div>
+      </div>
+      <button
+        class="save-btn"
+        [class.active]="selectedTeam.length === MAX_TEAM_SIZE"
+        (click)="saveTeam()"
+      >
+        Guardar
+      </button>
+    </div>
+  }
+</div>

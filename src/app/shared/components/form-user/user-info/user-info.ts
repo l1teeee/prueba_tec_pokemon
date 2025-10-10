@@ -124,21 +124,6 @@ export class Userinfo implements OnChanges {
     this.emitChanges();
   }
 
-  removeImage() {
-    this.currentImage = '';
-    this.userData.imagen = '';
-    this.fileName = '';
-    this.errorMessage = '';
-    this.imageSelected.emit('');
-    this.emitChanges();
-    if (this.fileInputRef?.nativeElement) {
-      this.fileInputRef.nativeElement.value = '';
-    }
-  }
-
-  getFileSizeLabel(): string {
-    return `Máximo ${this.MAX_SIZE_MB}MB`;
-  }
 
   // Validación
   onInputChange(field?: string) {

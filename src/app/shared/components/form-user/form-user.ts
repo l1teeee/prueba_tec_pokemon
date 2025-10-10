@@ -23,15 +23,18 @@ export class Formuser implements OnInit, OnDestroy {
   userData!: UserData;
   showImageValidation = false;
   showLoading = false;
+  isRegistrationComplete = false;
   private subscription: Subscription = new Subscription();
 
   constructor(private userDataService: UserDataService) {}
 
   ngOnInit() {
+    this.checkRegistrationStatus(); // ← Verificar el estado
+
     this.subscription.add(
-      this.userDataService.userData$.subscribe(data => {
-        this.userData = data;
-      })
+        this.userDataService.userData$.subscribe(data => {
+          this.userData = data;
+        })
     );
 
     this.userDataService.loadUserData();
@@ -39,6 +42,11 @@ export class Formuser implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  checkRegistrationStatus() {
+    const registerComplete = localStorage.getItem('registerComplete');
+    this.isRegistrationComplete = registerComplete === 'true';
   }
 
   onImageChange(image: string | null) {
@@ -78,7 +86,6 @@ export class Formuser implements OnInit, OnDestroy {
       return;
     }
 
-    // Marcar registro como completo
     const completeUserData = {
       ...this.userData,
       registerComplete: true
@@ -87,6 +94,7 @@ export class Formuser implements OnInit, OnDestroy {
     const saved = this.userDataService.saveUserData(completeUserData);
 
     if (saved) {
+      localStorage.setItem('registerComplete', 'true');
       this.showLoading = true;
       console.log('Datos guardados:', completeUserData);
     } else {
@@ -97,9 +105,8 @@ export class Formuser implements OnInit, OnDestroy {
   onLoadingComplete() {
     this.showLoading = false;
     alert('Perfil guardado exitosamente');
-    this.showImageValidation = false;
     window.location.reload();
+    this.showImageValidation = false;
+    this.isRegistrationComplete = true;
   }
-
-
 }
