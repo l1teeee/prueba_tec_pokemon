@@ -1,32 +1,39 @@
 <div class="form-container">
-    <app-form-header></app-form-header>
-    <div class="form-content">
-        <div>
-            <app-image-upload
-                    [currentImage]="userData.imagen"
-                    [showValidation]="showImageValidation"
-                    (imageChange)="onImageChange($event)"
-            ></app-image-upload>
-        </div>
-
-        <!-- Mostrar user-info solo si NO está completo el registro -->
-        <div *ngIf="!isRegistrationComplete">
-            <app-user-info
-                    [userData]="userData"
-                    [showValidationError]="showImageValidation"
-                    (formDataChange)="onFormDataChange($event)"
-                    (submitForm)="onSubmit()"
-            ></app-user-info>
-        </div>
-
-        <!-- Mostrar pick-pokemon solo si está completo el registro -->
-        <div *ngIf="isRegistrationComplete">
-            <app-pick-pokemon></app-pick-pokemon>
-        </div>
+  <app-form-header></app-form-header>
+  <div class="form-content">
+    <div>
+      <app-image-upload
+        [currentImage]="userData.imagen"
+        [showValidation]="showImageValidation"
+        (imageChange)="onImageChange($event)"
+      ></app-image-upload>
     </div>
+
+    <!-- Mostrar user-info solo si NO está completo el registro -->
+    @if (!isRegistrationComplete) {
+      <div>
+        <app-user-info
+          [userData]="userData"
+          [showValidationError]="showImageValidation"
+          (formDataChange)="onFormDataChange($event)"
+          (submitForm)="onSubmit()"
+        ></app-user-info>
+      </div>
+    }
+
+    <!-- Mostrar pick-pokemon solo si está completo el registro -->
+    @if (isRegistrationComplete) {
+      <div>
+        <app-pick-pokemon
+          (loadingChange)="onPokemonLoadingChange($event)"
+        >
+        </app-pick-pokemon>
+      </div>
+    }
+  </div>
 </div>
 
 <app-loading
-        [show]="showLoading"
-        (loadingComplete)="onLoadingComplete()">
+  [show]="showLoading"
+  (loadingComplete)="onLoadingComplete()">
 </app-loading>

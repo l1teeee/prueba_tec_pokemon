@@ -19,6 +19,7 @@ import { PickPokemon } from '@components/form-user/pick-pokemon/pick-pokemon'
 })
 export class Formuser implements OnInit, OnDestroy {
   @ViewChild(Userinfo) userInfoComponent!: Userinfo;
+  @ViewChild(PickPokemon) pickPokemonComponent!: PickPokemon;
 
   userData!: UserData;
   showImageValidation = false;
@@ -29,12 +30,12 @@ export class Formuser implements OnInit, OnDestroy {
   constructor(private userDataService: UserDataService) {}
 
   ngOnInit() {
-    this.checkRegistrationStatus(); // ← Verificar el estado
+    this.checkRegistrationStatus();
 
     this.subscription.add(
-        this.userDataService.userData$.subscribe(data => {
-          this.userData = data;
-        })
+      this.userDataService.userData$.subscribe(data => {
+        this.userData = data;
+      })
     );
 
     this.userDataService.loadUserData();
@@ -59,6 +60,12 @@ export class Formuser implements OnInit, OnDestroy {
   onFormDataChange(data: Partial<UserData>) {
     this.userDataService.updateUserData(data);
   }
+
+  onPokemonLoadingChange(isLoading: boolean) {
+    this.showLoading = isLoading;
+  }
+
+
 
   onSubmit() {
     const isFormValid = this.userInfoComponent.validateAll();
@@ -104,7 +111,7 @@ export class Formuser implements OnInit, OnDestroy {
 
   onLoadingComplete() {
     this.showLoading = false;
-    alert('Perfil guardado exitosamente');
+    alert('Datos guardados exitosamente');
     window.location.reload();
     this.showImageValidation = false;
     this.isRegistrationComplete = true;

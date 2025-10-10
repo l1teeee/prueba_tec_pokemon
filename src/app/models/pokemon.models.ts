@@ -1,10 +1,19 @@
-
 export interface Pokemon {
   id: number;
   name: string;
   sprite: string;
+  types: string[];
+  stats: PokemonStats;
 }
 
+export interface PokemonStats {
+  hp: number;
+  attack: number;
+  defense: number;
+  specialAttack: number;
+  specialDefense: number;
+  speed: number;
+}
 
 export interface PokemonDetail {
   id: number;
@@ -16,8 +25,22 @@ export interface PokemonDetail {
       };
     };
   };
+  types: Array<{
+    slot: number;
+    type: {
+      name: string;
+      url: string;
+    };
+  }>;
+  stats: Array<{
+    base_stat: number;
+    effort: number;
+    stat: {
+      name: string;
+      url: string;
+    };
+  }>;
 }
-
 
 export interface PokemonListResponse {
   count: number;
@@ -25,7 +48,6 @@ export interface PokemonListResponse {
   previous: string | null;
   results: PokemonBasicInfo[];
 }
-
 
 export interface PokemonBasicInfo {
   name: string;
