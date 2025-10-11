@@ -25,7 +25,9 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/custom-theme.scss",
+              "src/styles.css",
+              "node_modules/swiper/swiper-bundle.css"
             ]
           },
           "configurations": {
@@ -82,7 +84,9 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.css",
+              "node_modules/swiper/swiper-bundle.css"
+
             ]
           }
         }

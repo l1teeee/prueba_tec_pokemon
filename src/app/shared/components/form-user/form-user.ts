@@ -8,25 +8,30 @@ import { Imageupload } from './image-upload/image-upload';
 import { Loading } from '@components/loading/loading';
 import { UserData } from '@models/user-data.model';
 import { UserDataService } from '@services/user-data.service';
+import { PickPokemon } from '@components/form-user/pick-pokemon/pick-pokemon'
 
 @Component({
   selector: 'app-form-user',
   standalone: true,
-  imports: [CommonModule, FormsModule, FormHeader, Userinfo, Loading, Imageupload],
+  imports: [CommonModule, FormsModule, FormHeader, Userinfo, Loading, Imageupload, PickPokemon],
   templateUrl: './form-user.html',
   styleUrls: ['./form-user.scss'],
 })
 export class Formuser implements OnInit, OnDestroy {
   @ViewChild(Userinfo) userInfoComponent!: Userinfo;
+  @ViewChild(PickPokemon) pickPokemonComponent!: PickPokemon;
 
   userData!: UserData;
   showImageValidation = false;
   showLoading = false;
+  isRegistrationComplete = false;
   private subscription: Subscription = new Subscription();
 
   constructor(private userDataService: UserDataService) {}
 
   ngOnInit() {
+    this.checkRegistrationStatus();
+
     this.subscription.add(
       this.userDataService.userData$.subscribe(data => {
         this.userData = data;
@@ -40,6 +45,11 @@ export class Formuser implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  checkRegistrationStatus() {
+    const registerComplete = localStorage.getItem('registerComplete');
+    this.isRegistrationComplete = registerComplete === 'true';
+  }
+
   onImageChange(image: string | null) {
     this.userDataService.updateUserData({ imagen: image || '' });
     if (image) {
@@ -50,6 +60,12 @@ export class Formuser implements OnInit, OnDestroy {
   onFormDataChange(data: Partial<UserData>) {
     this.userDataService.updateUserData(data);
   }
+
+  onPokemonLoadingChange(isLoading: boolean) {
+    this.showLoading = isLoading;
+  }
+
+
 
   onSubmit() {
     const isFormValid = this.userInfoComponent.validateAll();
@@ -77,7 +93,13 @@ export class Formuser implements OnInit, OnDestroy {
       return;
     }
 
-    // Marcar registro como completo
+    const pokemonTeam = localStorage.getItem('pokemon-selected-team');
+    const hasTeam = pokemonTeam && JSON.parse(pokemonTeam).length > 0;
+
+    if (hasTeam) {
+      localStorage.setItem('entrenadorComplete', 'true');
+    }
+
     const completeUserData = {
       ...this.userData,
       registerComplete: true
@@ -86,6 +108,7 @@ export class Formuser implements OnInit, OnDestroy {
     const saved = this.userDataService.saveUserData(completeUserData);
 
     if (saved) {
+      localStorage.setItem('registerComplete', 'true');
       this.showLoading = true;
       console.log('Datos guardados:', completeUserData);
     } else {
@@ -93,11 +116,11 @@ export class Formuser implements OnInit, OnDestroy {
     }
   }
 
-
   onLoadingComplete() {
     this.showLoading = false;
-    alert('Perfil guardado exitosamente');
-    this.showImageValidation = false;
+    alert('Datos guardados exitosamente');
     window.location.reload();
+    this.showImageValidation = false;
+    this.isRegistrationComplete = true;
   }
 }

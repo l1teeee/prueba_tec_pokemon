@@ -2,7 +2,6 @@ export type DocumentoType = '' | 'dui' | 'carnet';
 
 export interface UserData {
   nombre: string;
-  apellido: string;
   cumpleanos: string;
   pasatiempo?: string;
   documento: DocumentoType;
@@ -14,7 +13,6 @@ export interface UserData {
 
 export const createEmptyUserData = (): UserData => ({
   nombre: '',
-  apellido: '',
   cumpleanos: '',
   pasatiempo: '',
   documento: '',

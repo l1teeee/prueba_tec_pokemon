@@ -1,7 +1,7 @@
 <div class="image-section">
   <div class="image-card">
     @if (isRegistered && currentImage) {
-      <h3 class="card-title user-full-name">{{ userInfo.nombre || 'Usuario' }} {{ userInfo.apellido || '' }}</h3>
+      <h3 class="card-title user-full-name">{{ getUserTitle() }}</h3>
 
       <div class="image-container">
         <div class="image-circle">
@@ -81,7 +81,7 @@
         } @else {
           <div class="image-info">
             <div class="file-details">
-              <span class="file-name">{{ fileName || 'image_002.jpg' }}</span>
+              <span class="file-name">{{ fileName }}</span>
             </div>
             <button class="delete-btn" type="button" (click)="removeImage()"
                     aria-label="Eliminar imagen">

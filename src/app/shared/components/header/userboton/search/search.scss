@@ -62,49 +62,7 @@
 }
 
 @media (max-width: 768px) {
-  .search-input {
-    font-size: 13px;
-    padding: 7px 14px;
-  }
-
-  @keyframes slideIn {
-    to {
-      width: 150px;
-      opacity: 1;
-    }
-  }
-
-  .icon-btn {
-    inline-size: 32px;
-    block-size: 32px;
-  }
-
-  .icon-btn svg {
-    width: 16px;
-    height: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .search-input {
-    font-size: 12px;
-    padding: 6px 12px;
-  }
-
-  @keyframes slideIn {
-    to {
-      width: 120px;
-      opacity: 1;
-    }
-  }
-
-  .icon-btn {
-    inline-size: 30px;
-    block-size: 30px;
-  }
-
-  .icon-btn svg {
-    width: 14px;
-    height: 14px;
+  .search-container {
+    display: none;
   }
 }

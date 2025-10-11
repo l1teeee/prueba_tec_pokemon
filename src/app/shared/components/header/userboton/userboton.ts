@@ -15,24 +15,18 @@ import { UserDataService } from '@services/user-data.service';
 export class Userboton implements OnInit, OnDestroy {
   selectedAction = '';
   userName = '';
-  private subscription: Subscription = new Subscription();
+  showUserActions = false;
+  private subscription = new Subscription();
 
-  constructor(
-    private userDataService: UserDataService
-    // private router: Router,
-    // private auth: AuthService
-  ) {}
+  constructor(private userDataService: UserDataService) {}
 
   ngOnInit() {
-    // Suscribirse a los datos del usuario para obtener el nombre
     this.subscription.add(
       this.userDataService.userData$.subscribe(data => {
-        // Obtener el nombre, si no existe dejar vacío para mostrar "Acciones"
         this.userName = data.nombre || '';
+        this.checkIfBothComplete();
       })
     );
-
-    // Cargar datos del usuario
     this.userDataService.loadUserData();
   }
 
@@ -40,14 +34,35 @@ export class Userboton implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  checkIfBothComplete(): void {
+    const userData = this.userDataService.getCurrentUserData();
+    const isRegistered = userData.registerComplete === true;
+    const isTrainerComplete = localStorage.getItem('entrenadorComplete') === 'true';
+    this.showUserActions = isRegistered && isTrainerComplete;
+  }
+
   onActionChange(): void {
-    if (this.selectedAction === 'profile') {
-      // this.router.navigate(['/perfil']);
-    } else if (this.selectedAction === 'logout') {
-      // this.auth.logout();
+    if (this.selectedAction === 'logout') {
+      this.logout();
     }
-    // Volver al placeholder
     this.selectedAction = '';
+  }
+
+  logout(): void {
+    const cacheKeys = ['pokemon_cache', 'pokemon_cache_expiration'];
+    const cacheData = cacheKeys.reduce((acc, key) => {
+      const value = localStorage.getItem(key);
+      if (value) acc[key] = value;
+      return acc;
+    }, {} as Record<string, string>);
+
+    localStorage.clear();
+
+    Object.entries(cacheData).forEach(([key, value]) => {
+      localStorage.setItem(key, value);
+    });
+
+    window.location.reload();
   }
 
   get displayText(): string {
