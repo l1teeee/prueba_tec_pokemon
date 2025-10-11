@@ -1,59 +1,51 @@
-# PruebatecPokemon
+# 🎮 Pokémon Trainer App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.4.
+## Descripción
+Aplicación web para la gestión de perfiles de entrenadores Pokémon, desarrollada con **Angular 20** y **Angular Material 20**.
 
-## Development server
+## 🛠️ Tecnologías Utilizadas
 
-To start a local development server, run:
+### Framework Principal
+- **Angular** 20.3.3
+- **Angular CLI** 20.3.4
+- **TypeScript** 5.9.3
 
-```bash
-ng serve
-```
+### Paquetes Adicionales
+- **Angular CDK** 20.2.7 — *Virtual Scroll* (requerido por la prueba)
+- **Angular Material** 20.2.7 — Componentes UI
+- **RxJS** 7.8.2 — Programación reactiva
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### APIs Externas
+- **PokeAPI** — Datos de Pokémon de primera generación
 
-## Code scaffolding
+## 📦 Requisitos Previos
+- **Node.js** v20.19.2 o superior
+- **npm** v11.5.2 o superior
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Verifica tus versiones:
 
-```bash
-ng generate component component-name
-```
+- node -v 
+- npm -v
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🚀 Instrucciones para Hacer Funcionar el Proyecto
 
-```bash
-ng generate --help
-```
+1) **Instalar Angular CLI (v20)**  
+   Ejecuta: `npm install -g @angular/cli@20`
 
-## Building
+2) **Clonar el Repositorio**  
+   `git clone https://github.com/l1teeee/prueba_tec_pokemon.git`  
+   `cd pruebatec-pokemon`
 
-To build the project run:
+3) **Instalar Dependencias**  
+   `npm install`
 
-```bash
-ng build
-```
+4) **Ejecutar en Desarrollo**  
+   `ng serve`
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+La aplicación quedará disponible en: **http://localhost:4200/**
 
-## Running unit tests
+## 📝 Comentarios Adicionales
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### Angular CDK Scrolling (Virtual Scroll)
+- **Módulo usado:** `@angular/cdk/scrolling`
+- **Implementación:** *Virtual Scroll* para optimizar el renderizado de la lista de Pokémon (mejora de rendimiento con grandes listados).
