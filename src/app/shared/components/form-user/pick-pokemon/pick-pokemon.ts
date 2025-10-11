@@ -104,12 +104,8 @@ export class PickPokemon implements OnInit {
 
       // Guardar equipo
       this.pokemonService.saveTeam(this.selectedTeam);
-
-      // Guardar estado de completado en localStorage
       localStorage.setItem('entrenadorComplete', 'true');
-
       console.log('Equipo guardado:', this.selectedTeam);
-      console.log('Estado guardado: entrenadorComplete = true');
 
       setTimeout(() => {
         this.loadingChange.emit(false);
@@ -118,17 +114,6 @@ export class PickPokemon implements OnInit {
     } else {
       alert(`Debes seleccionar ${this.MAX_TEAM_SIZE} Pokémon`);
     }
-  }
-
-  clearTeam(): void {
-    this.selectedTeam = [];
-    this.pokemonService.clearTeam();
-
-    // Limpiar también el estado de completado
-    localStorage.removeItem('entrenadorComplete');
-
-    console.log('Equipo limpiado');
-    console.log('Estado limpiado: entrenadorComplete removido');
   }
 
   getPokemonNumber(id: number): string {
@@ -158,9 +143,8 @@ export class PickPokemon implements OnInit {
   }
 
   editTeam(): void {
-    localStorage.removeItem('entrenadorComplete');
+    localStorage.setItem('entrenadorComplete', 'false');
     this.loadTeamFromService();
-    console.log('Modo edición activado');
   }
 
 

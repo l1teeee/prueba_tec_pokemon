@@ -93,6 +93,13 @@ export class Formuser implements OnInit, OnDestroy {
       return;
     }
 
+    const pokemonTeam = localStorage.getItem('pokemon-selected-team');
+    const hasTeam = pokemonTeam && JSON.parse(pokemonTeam).length > 0;
+
+    if (hasTeam) {
+      localStorage.setItem('entrenadorComplete', 'true');
+    }
+
     const completeUserData = {
       ...this.userData,
       registerComplete: true
