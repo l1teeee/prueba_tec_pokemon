@@ -8,7 +8,7 @@
 .image-card{
   width: 100%;
   box-sizing: border-box;
-  background: #fbbf24;
+  background: var(--yellow-poke);
   border-radius: 16px;
   padding: clamp(20px, 4vw, 32px) clamp(16px, 3vw, 24px);
   display: flex;
@@ -22,7 +22,7 @@
 .card-title{
   font-size: clamp(16px, 2vw, 18px);
   font-weight: 800;
-  color: #185A7D;
+  color: var(--titulo);
   margin: 0;
 }
 
@@ -65,7 +65,7 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color:#1f5e85;
+  color: var(--titulo);
   transition: background-color .2s, transform .2s, box-shadow .2s;
 }
 
@@ -88,7 +88,7 @@
 
 .file-name{
   font-size: 14px;
-  color:#1f5e85;
+  color: var(--titulo);
   font-weight: 500;
   min-width: 0;
   overflow: hidden;
@@ -101,7 +101,7 @@
   border: none;
   cursor: pointer;
   padding: 4px;
-  color:#ef4444;
+  color:var(--red-poke);
   display: inline-flex;
   align-items: center;
   transition: transform .2s;
@@ -118,7 +118,7 @@
   width: 100%;
   text-align: center;
   margin-top: 12px;
-  color: #475569;
+  color: var(--subtitulo);
   font-size: 12px;
 }
 
@@ -150,13 +150,13 @@
 .user-data-label {
   font-size: 16px;
   font-weight: 600;
-  color: #666666;
+  color: var(--subtitulo);
 }
 
 .user-data-value {
   font-size: 16px;
   font-weight: 600;
-  color: #0066A1;
+  color: var(--blue-poke);
   text-align: right;
 }
 
@@ -174,4 +174,5 @@
     font-size: 14px;
   }
 }
+
 

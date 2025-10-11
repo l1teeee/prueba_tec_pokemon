@@ -16,8 +16,6 @@ export class Search {
 
   toggleSearch() {
     this.isOpen = !this.isOpen;
-
-    // Hacer focus en el input cuando se abre
     if (this.isOpen) {
       setTimeout(() => {
         this.searchInput?.nativeElement.focus();
@@ -28,12 +26,10 @@ export class Search {
   onSearch() {
     if (this.searchQuery.trim()) {
       console.log('Buscando:', this.searchQuery);
-      // Aquí va tu lógica de búsqueda
     }
   }
 
   onBlur() {
-    // Cerrar si el input está vacío
     setTimeout(() => {
       if (!this.searchQuery.trim()) {
         this.isOpen = false;

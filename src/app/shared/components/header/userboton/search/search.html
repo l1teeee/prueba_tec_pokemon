@@ -1,17 +1,16 @@
 <div class="search-container">
-  <!-- Input que se despliega -->
-  <input
-    *ngIf="isOpen"
-    #searchInput
-    type="text"
-    class="search-input"
-    placeholder="Buscar..."
-    [(ngModel)]="searchQuery"
-    (keyup.enter)="onSearch()"
-    (blur)="onBlur()"
-  />
+  @if (isOpen) {
+    <input
+      #searchInput
+      type="text"
+      class="search-input"
+      placeholder="Buscar..."
+      [(ngModel)]="searchQuery"
+      (keyup.enter)="onSearch()"
+      (blur)="onBlur()"
+    />
+  }
 
-  <!-- Botón de búsqueda -->
   <button
     class="icon-btn search-btn"
     type="button"
