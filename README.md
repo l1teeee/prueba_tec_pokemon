@@ -34,7 +34,7 @@ Verifica tus versiones:
 
 2) **Clonar el Repositorio**  
    `git clone https://github.com/l1teeee/prueba_tec_pokemon.git`  
-   `cd pruebatec-pokemon`
+   `cd prueba_tec_pokemon`
 
 3) **Instalar Dependencias**  
    `npm install`
