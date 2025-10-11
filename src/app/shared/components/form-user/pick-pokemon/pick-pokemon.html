@@ -1,0 +1,173 @@
+<div class="pokemon-container">
+  @if (isTrainerComplete()) {
+    <div class="header">
+      <div class="header-title">
+        <h1>Mis Pokémon</h1>
+        <button class="edit-btn" (click)="editTeam()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          Editar
+        </button>
+      </div>
+    </div>
+    <cdk-virtual-scroll-viewport itemSize="280" class="saved-team-viewport">
+      <div class="saved-team">
+        <div
+          *cdkVirtualFor="let pokemon of selectedTeam; trackBy: trackByPokemonId"
+          class="saved-pokemon-card"
+        >
+          <div class="card-content">
+            <!-- Lado izquierdo: Imagen y nombre -->
+            <div class="pokemon-left">
+              <img
+                [src]="pokemon.sprite"
+                [alt]="pokemon.name"
+                class="pokemon-sprite"
+              />
+              <div class="pokemon-name-section">
+                <h2>{{ pokemon.name }}</h2>
+                <span class="pokemon-type">{{ pokemon.types.join('/') }}</span>
+              </div>
+            </div>
+
+            <!-- Lado derecho: Stats -->
+            <div class="pokemon-stats">
+              <div class="stat-row">
+                <span class="stat-label">HP</span>
+                <div class="stat-bar-container">
+                  <div class="stat-bar hp" [style.width.%]="getStatPercentage(pokemon.stats.hp, 'hp')"></div>
+                </div>
+              </div>
+
+              <div class="stat-row">
+                <span class="stat-label">Ataque</span>
+                <div class="stat-bar-container">
+                  <div class="stat-bar attack" [style.width.%]="getStatPercentage(pokemon.stats.attack, 'attack')"></div>
+                </div>
+              </div>
+
+              <div class="stat-row">
+                <span class="stat-label">Defensa</span>
+                <div class="stat-bar-container">
+                  <div class="stat-bar defense" [style.width.%]="getStatPercentage(pokemon.stats.defense, 'defense')"></div>
+                </div>
+              </div>
+
+              <div class="stat-row">
+                <span class="stat-label">Ataque Especial</span>
+                <div class="stat-bar-container">
+                  <div class="stat-bar special-attack" [style.width.%]="getStatPercentage(pokemon.stats.specialAttack, 'specialAttack')"></div>
+                </div>
+              </div>
+
+              <div class="stat-row">
+                <span class="stat-label">Defensa Especial</span>
+                <div class="stat-bar-container">
+                  <div class="stat-bar special-defense" [style.width.%]="getStatPercentage(pokemon.stats.specialDefense, 'specialDefense')"></div>
+                </div>
+              </div>
+
+              <div class="stat-row">
+                <span class="stat-label">Velocidad</span>
+                <div class="stat-bar-container">
+                  <div class="stat-bar speed" [style.width.%]="getStatPercentage(pokemon.stats.speed, 'speed')"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </cdk-virtual-scroll-viewport>
+  } @else {
+    <!-- Vista de selección de Pokémon -->
+    <div class="header">
+      <h1>Pokémon</h1>
+      <p class="subtitle">Selecciona 3 Pokémon para que sean parte de tu equipo</p>
+    </div>
+
+    <div class="search-box">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar por índice, nombre..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+      />
+    </div>
+
+    @if (isLoading) {
+      <div class="loading-state">
+        <div class="pokeball-loader"></div>
+        <p>Cargando Pokémon...</p>
+      </div>
+    }
+
+    @if (errorMessage) {
+      <div class="error-state">
+        <p>{{ errorMessage }}</p>
+        <button class="retry-btn" (click)="loadPokemon()">Reintentar</button>
+      </div>
+    }
+
+    <!-- Virtual Scroll (3x3) -->
+    @if (!isLoading && !errorMessage) {
+      <div class="pokemon-grid">
+        <cdk-virtual-scroll-viewport
+          [itemSize]="ITEM_SIZE"
+          class="viewport"
+        >
+          @for (row of getPokemonRows(); track row[0]?.id) {
+            <div class="pokemon-row">
+              @for (pokemon of row; track pokemon.id) {
+                <div
+                  class="pokemon-card"
+                  [class.selected]="isSelected(pokemon)"
+                  [class.disabled]="!canAddMore() && !isSelected(pokemon)"
+                  (click)="togglePokemon(pokemon)"
+                >
+                  <div class="pokemon-image">
+                    <img
+                      [src]="pokemon.sprite"
+                      [alt]="pokemon.name"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="pokemon-badge">
+                    <span class="pokemon-id">{{ getPokemonNumber(pokemon.id) }}</span>
+                    <span class="pokemon-name">{{ pokemon.name }}</span>
+                  </div>
+                  @if (isSelected(pokemon)) {
+                    <div class="checkmark">✓</div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </cdk-virtual-scroll-viewport>
+      </div>
+    }
+
+    @if (!isLoading && filteredPokemon.length === 0) {
+      <div class="no-results">
+        <p>No se encontraron Pokémon</p>
+        <button class="clear-search-btn" (click)="searchTerm = ''; onSearchChange()">
+          Limpiar búsqueda
+        </button>
+      </div>
+    }
+
+    @if (!isLoading) {
+      <div class="save-section">
+        <button
+          class="save-btn"
+          [class.active]="selectedTeam.length === MAX_TEAM_SIZE"
+          (click)="saveTeam()"
+        >
+          Guardar
+        </button>
+      </div>
+    }
+  }
+</div>

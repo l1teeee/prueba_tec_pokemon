@@ -1,0 +1,13 @@
+.logo-img{
+  width: 90px;     /* ajusta aquí el tamaño deseado */
+  height: auto;
+  display: inline-block;
+  margin-left: 20px;
+}
+
+.hover-scale{
+  transform: translateZ(0);
+  transition: transform 180ms ease;
+}
+.hover-scale:hover{ transform: scale(1.05); }
+.hover-scale:active{ transform: scale(0.99); }
