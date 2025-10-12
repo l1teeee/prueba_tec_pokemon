@@ -42,37 +42,7 @@ export class PokemonService {
     );
   }
 
-  getPokemonById(id: number): Observable<Pokemon> {
-    const cachedData = this.getFromCache();
 
-    if (cachedData) {
-      const pokemon = cachedData.find(p => p.id === id);
-      if (pokemon) {
-        console.log(`✅ Pokémon #${id} encontrado en caché`);
-        return of(pokemon);
-      }
-    }
-
-    return this.getPokemonDetail(id).pipe(
-      map(detail => this.mapToViewModel(detail))
-    );
-  }
-
-  getPokemonByName(name: string): Observable<Pokemon> {
-    const cachedData = this.getFromCache();
-
-    if (cachedData) {
-      const pokemon = cachedData.find(p => p.name.toLowerCase() === name.toLowerCase());
-      if (pokemon) {
-        console.log(`✅ Pokémon "${name}" encontrado en caché`);
-        return of(pokemon);
-      }
-    }
-
-    return this.http.get<PokemonDetail>(`${this.baseUrl}/pokemon/${name.toLowerCase()}`).pipe(
-      map(detail => this.mapToViewModel(detail))
-    );
-  }
 
   /* Guarda el equipo de Pokémon en localStorage */
   saveTeam(team: Pokemon[]): void {
@@ -100,20 +70,6 @@ export class PokemonService {
     }
   }
 
-  /* Limpia el equipo guardado en localStorage */
-  clearTeam(): void {
-    try {
-      localStorage.removeItem(this.TEAM_STORAGE_KEY);
-      console.log('Equipo limpiado de localStorage');
-    } catch (error) {
-      console.error('Error al limpiar equipo:', error);
-    }
-  }
-
-  /* Verificar si hay equipo guardado */
-  hasTeamSaved(): boolean {
-    return localStorage.getItem(this.TEAM_STORAGE_KEY) !== null;
-  }
 
   private getPokemonDetail(id: number): Observable<PokemonDetail> {
     return this.http.get<PokemonDetail>(`${this.baseUrl}/pokemon/${id}`);
@@ -190,12 +146,4 @@ export class PokemonService {
     console.log('Caché limpiado');
   }
 
-  hasCachedData(): boolean {
-    return this.getFromCache() !== null;
-  }
-
-  forceReload(): Observable<Pokemon[]> {
-    this.clearCache();
-    return this.getFirstGenerationPokemon();
-  }
 }
